@@ -6,7 +6,6 @@ produk_file = "produk.csv"
 transaksi_file = "transaksi.csv"
 antrian = deque()
 
-# === Inisialisasi File ===
 def buat_file():
     if not os.path.exists(produk_file):
         with open(produk_file, "w", newline='') as f:
@@ -15,7 +14,6 @@ def buat_file():
         with open(transaksi_file, "w", newline='') as f:
             csv.writer(f).writerow(["id", "tanggal", "id_produk", "jumlah", "total", "tipe"])
 
-# === Baca Produk ===
 def baca_produk():
     with open(produk_file, newline='') as f:
         data = list(csv.DictReader(f))
@@ -24,14 +22,12 @@ def baca_produk():
             d["stok"] = int(d["stok"])
         return data
 
-# === Simpan Produk ===
 def simpan_produk(data):
     with open(produk_file, "w", newline='') as f:
         writer = csv.DictWriter(f, fieldnames=["id", "nama", "harga", "stok", "deskripsi"])
         writer.writeheader()
         writer.writerows(data)
-
-# === Tampilkan Produk ===
+        
 def tampil_produk(data):
     if not data:
         print("Belum ada produk.")
@@ -40,7 +36,6 @@ def tampil_produk(data):
     for p in data:
         print(f"{p['id']}. {p['nama']} | Rp{p['harga']} | Stok: {p['stok']} | {p['deskripsi']}")
 
-# === Tambah Produk ===
 def tambah_produk(data):
     try:
         nama = input("Nama: ")
@@ -55,15 +50,13 @@ def tambah_produk(data):
         print("Produk berhasil ditambahkan.")
     except:
         print("Input tidak valid.")
-
-# === Hapus Produk ===
+        
 def hapus_produk(data):
     tampil_produk(data)
     id_hapus = input("ID produk yang ingin dihapus: ")
     for i, p in enumerate(data):
         if p["id"] == id_hapus:
             data.pop(i)
-            # Perbarui ID agar urut lagi
             for j, d in enumerate(data):
                 d["id"] = str(j+1)
             simpan_produk(data)
@@ -71,7 +64,6 @@ def hapus_produk(data):
             return
     print("ID tidak ditemukan.")
 
-# === Transaksi (Jual/Beli) ===
 def simpan_transaksi(t):
     with open(transaksi_file, "a", newline='') as f:
         writer = csv.DictWriter(f, fieldnames=t.keys())
@@ -92,7 +84,7 @@ def transaksi(data, tipe):
                         return
                     p["stok"] -= jumlah
                     total = jumlah * p["harga"]
-                else:  # pembelian
+                else:  
                     harga_beli = int(input("Harga beli per unit: "))
                     p["stok"] += jumlah
                     total = jumlah * harga_beli
@@ -114,7 +106,6 @@ def transaksi(data, tipe):
             return
     print("Produk tidak ditemukan.")
 
-# === Laporan ===
 def laporan():
     if not os.path.exists(transaksi_file):
         print("Belum ada transaksi.")
@@ -134,7 +125,6 @@ def laporan():
                 total += int(t["total"])
     print(f"Total {jenis}: Rp{total}")
 
-# === Menu ===
 def menu():
     buat_file()
     produk = baca_produk()
@@ -156,6 +146,5 @@ def menu():
         else:
             print("Pilihan tidak valid.")
 
-# === Mulai Program ===
 if __name__ == "__main__":
     menu()
